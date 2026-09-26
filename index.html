@@ -1,0 +1,1188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Vxrx Clicker</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com/">
+  <link rel="preconnect" href="https://fonts.gstatic.com/" crossorigin="">
+  <link href="https://fonts.googleapis.com/css2?family=Luckiest+Guy&display=swap" rel="stylesheet">
+  
+  <style>
+    * {
+      box-sizing: border-box;
+      user-select: none;
+    }
+
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: 'Luckiest Guy', cursive;
+      background-color: #1a1a24;
+      color: #fff;
+      display: flex;
+      height: 100vh;
+      overflow: hidden;
+    }
+
+    #header {
+      position: absolute;
+      top: 20px;
+      left: 340px;
+      font-size: 28px;
+      color: #ffd700;
+      text-shadow: 2px 2px 0px #000, -2px -2px 0px #000, 2px -2px 0px #000, -2px 2px 0px #000;
+      z-index: 10;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .header-btn {
+      font-family: 'Luckiest Guy', cursive;
+      font-size: 14px;
+      color: white;
+      border: 2px solid #000;
+      border-radius: 6px;
+      padding: 6px 12px;
+      cursor: pointer;
+      transition: background 0.2s, transform 0.1s;
+    }
+
+    .header-btn:active { transform: scale(0.95); }
+    .auth-btn { background-color: #4285F4; }
+    .auth-btn:hover { background-color: #357ae8; }
+    .reset-btn { background-color: #ff4757; }
+    .reset-btn:hover { background-color: #ff6b81; }
+
+    .nav-btn {
+      background-color: #8a2be2;
+    }
+    .nav-btn:hover { background-color: #9b42f5; }
+    .nav-btn.active-tab {
+      background-color: #e056fd;
+      box-shadow: 0 0 8px #e056fd;
+    }
+
+    /* AFK Button Styles */
+    .afk-btn { background-color: #2ed573; }
+    .afk-btn:hover { background-color: #26af5f; }
+    .afk-btn.active {
+      background-color: #ffa502;
+      box-shadow: 0 0 10px #ffa502;
+    }
+
+    /* Username Input Controls */
+    .username-container {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .username-input {
+      font-family: sans-serif;
+      font-size: 13px;
+      padding: 5px 8px;
+      border-radius: 6px;
+      border: 2px solid #000;
+      outline: none;
+      background-color: #171722;
+      color: #fff;
+      width: 130px;
+    }
+
+    .username-input:focus {
+      border-color: #00ffcc;
+    }
+
+    .username-save-btn {
+      background-color: #00ffcc;
+      color: #000;
+      border: 1.5px solid #000;
+      border-radius: 5px;
+      padding: 5px 8px;
+      font-family: 'Luckiest Guy', cursive;
+      font-size: 12px;
+      cursor: pointer;
+    }
+
+    .username-save-btn:hover {
+      background-color: #00cca3;
+    }
+
+    #user-status {
+      font-size: 14px;
+      color: #00ffcc;
+      text-shadow: 1px 1px 0px #000;
+      font-family: sans-serif;
+    }
+
+    .inventory-area {
+      width: 320px;
+      background-color: #252533;
+      border-right: 4px solid #333348;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .panel-title {
+      font-size: 26px;
+      text-align: center;
+      color: #fff;
+      -webkit-text-stroke: 1px #000;
+      margin-bottom: 5px;
+    }
+
+    .inventory-list {
+      flex: 1;
+      background-color: #171722;
+      border: 3px solid #333348;
+      border-radius: 10px;
+      padding: 10px;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .inventory-card {
+      background-color: #252533;
+      border: 2px solid;
+      border-radius: 8px;
+      padding: 10px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .item-info {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .item-name {
+      font-size: 16px;
+      -webkit-text-stroke: 0.5px #000;
+    }
+
+    .item-count {
+      font-size: 13px;
+      color: #ffd700;
+      font-family: sans-serif;
+      margin-top: 2px;
+    }
+
+    .item-mult {
+      font-size: 11px;
+      color: #00ffcc;
+      font-family: sans-serif;
+    }
+
+    .sell-btn {
+      font-family: 'Luckiest Guy', cursive;
+      font-size: 12px;
+      background-color: #28a745;
+      color: white;
+      border: 1.5px solid #000;
+      border-radius: 5px;
+      padding: 5px 8px;
+      cursor: pointer;
+      transition: background 0.2s, transform 0.1s;
+    }
+
+    .sell-btn:hover { background-color: #34ce57; }
+    .sell-btn:active { transform: scale(0.95); }
+
+    .empty-msg {
+      font-family: sans-serif;
+      font-size: 14px;
+      color: #707080;
+      text-align: center;
+      margin-top: 20px;
+    }
+
+    .game-area {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+    }
+
+    .clicker-btn {
+      width: 260px;
+      height: 260px;
+      border-radius: 50%;
+      background-image: url('vxrx%20x%20corgi.jpg');
+      background-size: cover;
+      background-position: center;
+      border: 6px solid #fff;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: transform 0.05s ease;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .clicker-btn:active { transform: scale(0.93); }
+
+    .click-text {
+      font-size: 48px;
+      color: #ffffff;
+      -webkit-text-stroke: 2px #000000;
+      text-shadow: 0 4px 8px rgba(0,0,0,0.8);
+      pointer-events: none;
+    }
+
+    .click-pop {
+      position: absolute;
+      color: #ffd700;
+      font-size: 28px;
+      -webkit-text-stroke: 1.5px #000;
+      pointer-events: none;
+      animation: floatUp 0.8s ease-out forwards;
+    }
+
+    @keyframes floatUp {
+      0% { opacity: 1; transform: translateY(0) scale(1); }
+      100% { opacity: 0; transform: translateY(-60px) scale(1.2); }
+    }
+
+    /* Leaderboard Tab Area */
+    .leaderboard-area {
+      flex: 1;
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+      padding-top: 90px;
+      padding-bottom: 20px;
+      position: relative;
+      overflow-y: auto;
+    }
+
+    .leaderboard-container {
+      width: 90%;
+      max-width: 600px;
+      background-color: #252533;
+      border: 4px solid #333348;
+      border-radius: 12px;
+      padding: 20px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+    }
+
+    .leaderboard-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-family: sans-serif;
+      margin-top: 10px;
+    }
+
+    .leaderboard-table th {
+      font-family: 'Luckiest Guy', cursive;
+      color: #ffd700;
+      font-size: 18px;
+      text-align: left;
+      padding: 10px;
+      border-bottom: 2px solid #333348;
+    }
+
+    .leaderboard-table td {
+      padding: 10px;
+      border-bottom: 1px solid #1a1a24;
+      font-size: 15px;
+    }
+
+    .leaderboard-table tr:nth-child(even) {
+      background-color: #1e1e2a;
+    }
+
+    .rank-top1 { color: #ffd700; font-weight: bold; }
+    .rank-top2 { color: #c0c0c0; font-weight: bold; }
+    .rank-top3 { color: #cd7f32; font-weight: bold; }
+
+    .refresh-info {
+      font-family: sans-serif;
+      font-size: 12px;
+      color: #888;
+      text-align: center;
+      margin-top: 10px;
+    }
+
+    .shop-area {
+      width: 360px;
+      background-color: #252533;
+      border-left: 4px solid #333348;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      overflow-y: auto;
+    }
+
+    .crate-card {
+      border-radius: 10px;
+      padding: 12px;
+      background-color: #171722;
+      border: 3px solid;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+    }
+
+    .crate-common { border-color: #808080; }
+    .crate-uncommon { border-color: #28a745; }
+    .crate-rare { border-color: #007bff; }
+    .crate-epic { border-color: #8a2be2; }
+    .crate-legendary { border-color: #ff8c00; }
+    .crate-mythic { border-color: #ffd700; }
+
+    .crate-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .crate-name {
+      font-size: 18px;
+      text-transform: uppercase;
+      -webkit-text-stroke: 1px #000;
+    }
+
+    .crate-common .crate-name { color: #808080; }
+    .crate-uncommon .crate-name { color: #28a745; }
+    .crate-rare .crate-name { color: #007bff; }
+    .crate-epic .crate-name { color: #8a2be2; }
+    .crate-legendary .crate-name { color: #ff8c00; }
+    .crate-mythic .crate-name { color: #ffd700; }
+
+    .buy-btn {
+      font-family: 'Luckiest Guy', cursive;
+      font-size: 13px;
+      padding: 6px 12px;
+      border: 2px solid #000;
+      border-radius: 6px;
+      background-color: #ffd700;
+      color: #000;
+      cursor: pointer;
+      transition: background 0.2s, transform 0.1s;
+    }
+
+    .buy-btn:hover { background-color: #ffca00; }
+    .buy-btn:active { transform: scale(0.95); }
+
+    .crate-info {
+      font-family: sans-serif;
+      font-size: 12px;
+      color: #b9bbbe;
+      background-color: #0d0d14;
+      padding: 8px;
+      border-radius: 6px;
+      line-height: 1.4;
+    }
+
+    .crate-info span { display: block; color: #fff; }
+
+    #crate-modal {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: rgba(0, 0, 0, 0.85);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      z-index: 100;
+      visibility: hidden;
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+
+    #crate-modal.active {
+      visibility: visible;
+      opacity: 1;
+    }
+
+    .opening-box {
+      width: 180px;
+      height: 180px;
+      border-radius: 16px;
+      border: 6px solid #fff;
+      background: #333;
+      box-shadow: 0 0 30px rgba(255, 255, 255, 0.3);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 22px;
+      color: #fff;
+      -webkit-text-stroke: 1px #000;
+      margin-bottom: 20px;
+    }
+
+    .shake-animation { animation: shake 0.5s infinite; }
+    .pop-animation { animation: popOpen 0.4s ease-out forwards; }
+
+    @keyframes shake {
+      0% { transform: translate(1px, 1px) rotate(0deg); }
+      20% { transform: translate(-3px, 0px) rotate(-3deg); }
+      40% { transform: translate(1px, -1px) rotate(3deg); }
+      60% { transform: translate(-3px, 1px) rotate(-3deg); }
+      80% { transform: translate(3px, 1px) rotate(3deg); }
+      100% { transform: translate(1px, -2px) rotate(0deg); }
+    }
+
+    @keyframes popOpen {
+      0% { transform: scale(0.8); opacity: 0.5; }
+      50% { transform: scale(1.25); opacity: 1; }
+      100% { transform: scale(1); opacity: 1; }
+    }
+
+    #reward-text {
+      font-size: 32px;
+      color: #fff;
+      -webkit-text-stroke: 1px #000;
+      text-align: center;
+      height: 40px;
+    }
+
+    .close-modal-btn {
+      margin-top: 25px;
+      padding: 10px 24px;
+      font-family: 'Luckiest Guy', cursive;
+      font-size: 18px;
+      background-color: #28a745;
+      color: white;
+      border: 2px solid #000;
+      border-radius: 8px;
+      cursor: pointer;
+      display: none;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="inventory-area">
+    <div class="panel-title">Inventory</div>
+    <div class="inventory-list" id="inventory-list">
+      <div class="empty-msg">No characters unlocked yet!</div>
+    </div>
+  </div>
+
+  <div id="header">
+    <div>Coins: <span id="coin-count">0</span></div>
+    <button class="header-btn nav-btn active-tab" id="tab-game">Game</button>
+    <button class="header-btn nav-btn" id="tab-leaderboard">Leaderboard</button>
+    <button class="header-btn auth-btn" id="auth-btn">Sign in with Google</button>
+    
+    <div class="username-container">
+      <input type="text" id="username-input" class="username-input" placeholder="Set Username" maxlength="18">
+      <button id="save-username-btn" class="username-save-btn">Update</button>
+    </div>
+
+    <span id="user-status"></span>
+    <button class="header-btn afk-btn" id="afk-btn">AFK: OFF</button>
+    <button class="header-btn reset-btn" id="reset-btn">Reset Save</button>
+  </div>
+
+  <!-- Game Area -->
+  <div class="game-area" id="game-view">
+    <div class="clicker-btn" id="clicker">
+      <span class="click-text">CLICK</span>
+    </div>
+  </div>
+
+  <!-- Leaderboard Area -->
+  <div class="leaderboard-area" id="leaderboard-view">
+    <div class="leaderboard-container">
+      <div class="panel-title">Worldwide Leaderboard</div>
+      <table class="leaderboard-table">
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Player</th>
+            <th>Coins</th>
+          </tr>
+        </thead>
+        <tbody id="leaderboard-body">
+          <tr>
+            <td colspan="3" style="text-align:center; color:#888;">Loading leaderboard...</td>
+          </tr>
+        </tbody>
+      </table>
+      <div class="refresh-info">Leaderboard updates automatically every 15 minutes.</div>
+    </div>
+  </div>
+
+  <div class="shop-area">
+    <div class="panel-title">Crates</div>
+
+    <div class="crate-card crate-common">
+      <div class="crate-header">
+        <span class="crate-name">Common Crate</span>
+        <button class="buy-btn" data-type="common" data-cost="15">15 Coins</button>
+      </div>
+      <div class="crate-info">
+        <span>Characters &amp; Odds (1.1x Mult):</span>
+        • SvenFN (50%)<br>
+        • Mr_Rake (30%)<br>
+        • Hi_Acerboy (20%)
+      </div>
+    </div>
+
+    <div class="crate-card crate-uncommon">
+      <div class="crate-header">
+        <span class="crate-name">Uncommon Crate</span>
+        <button class="buy-btn" data-type="uncommon" data-cost="75">75 Coins</button>
+      </div>
+      <div class="crate-info">
+        <span>Characters &amp; Odds (1.25x Mult):</span>
+        • SarynFN (50%)<br>
+        • Collfillgamer (35%)<br>
+        • Maximo88971 (15%)
+      </div>
+    </div>
+
+    <div class="crate-card crate-rare">
+      <div class="crate-header">
+        <span class="crate-name">Rare Crate</span>
+        <button class="buy-btn" data-type="rare" data-cost="225">225 Coins</button>
+      </div>
+      <div class="crate-info">
+        <span>Characters &amp; Odds (1.5x Mult):</span>
+        • itsgeorge (45%)<br>
+        • urlocalchris (45%)<br>
+        • KevinFn (10%)
+      </div>
+    </div>
+
+    <div class="crate-card crate-epic">
+      <div class="crate-header">
+        <span class="crate-name">Epic Crate</span>
+        <button class="buy-btn" data-type="epic" data-cost="600">600 Coins</button>
+      </div>
+      <div class="crate-info">
+        <span>Characters &amp; Odds (2x Mult):</span>
+        • johan I lowkey forgot (70%)<br>
+        • CapybaraGamingYT (20%)<br>
+        • LMG2010. (10%)
+      </div>
+    </div>
+
+    <div class="crate-card crate-legendary">
+      <div class="crate-header">
+        <span class="crate-name">Legendary Crate</span>
+        <button class="buy-btn" data-type="legendary" data-cost="1500">1500 Coins</button>
+      </div>
+      <div class="crate-info">
+        <span>Characters &amp; Odds (2.5x Mult):</span>
+        • Slimey (60%)<br>
+        • TotalRADMANDude (30%)<br>
+        • vxrx (10%)
+      </div>
+    </div>
+
+    <div class="crate-card crate-mythic">
+      <div class="crate-header">
+        <span class="crate-name">Mythic Crate</span>
+        <button class="buy-btn" data-type="mythic" data-cost="3750">3750 Coins</button>
+      </div>
+      <div class="crate-info">
+        <span>Characters &amp; Odds (3.0x Mult):</span>
+        • Mythic0Purple (99%)<br>
+        • Mythic vxrx (1%)
+      </div>
+    </div>
+  </div>
+
+  <div id="crate-modal">
+    <div class="opening-box" id="modal-box">???</div>
+    <div id="reward-text">Opening...</div>
+    <button class="close-modal-btn" id="close-modal">Collect!</button>
+  </div>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+    import { getAuth, signInWithPopup, GoogleAuthProvider, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+    import { getFirestore, doc, setDoc, getDoc, collection, query, orderBy, limit, getDocs } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+
+    document.addEventListener("DOMContentLoaded", () => {
+      const firebaseConfig = {
+        apiKey: "AIzaSyAR83HYGyJDlhGpUQLFRIs0adfFio8e_4k",
+        authDomain: "vxrxclicker-2baf2.firebaseapp.com",
+        projectId: "vxrxclicker-2baf2",
+        storageBucket: "vxrxclicker-2baf2.firebasestorage.app",
+        messagingSenderId: "118689735322",
+        appId: "1:118689735322:web:3660b37c0dfd87d575f523"
+      };
+
+      const app = initializeApp(firebaseConfig);
+      const auth = getAuth(app);
+      const db = getFirestore(app);
+      const googleProvider = new GoogleAuthProvider();
+
+      let coins = 0;
+      let inventory = {};
+      let lastSavedTime = 0;
+      let currentUser = null;
+      let cloudSaveTimeout = null;
+      let customDisplayName = "Guest";
+
+      const coinDisplay = document.getElementById('coin-count');
+      const clicker = document.getElementById('clicker');
+      const inventoryList = document.getElementById('inventory-list');
+      const authBtn = document.getElementById('auth-btn');
+      const userStatus = document.getElementById('user-status');
+      const resetBtn = document.getElementById('reset-btn');
+      const closeModalBtn = document.getElementById('close-modal');
+      const afkBtn = document.getElementById('afk-btn');
+      const usernameInput = document.getElementById('username-input');
+      const saveUsernameBtn = document.getElementById('save-username-btn');
+
+      // Navigation Elements
+      const tabGame = document.getElementById('tab-game');
+      const tabLeaderboard = document.getElementById('tab-leaderboard');
+      const gameView = document.getElementById('game-view');
+      const leaderboardView = document.getElementById('leaderboard-view');
+      const leaderboardBody = document.getElementById('leaderboard-body');
+
+      let isAfkActive = false;
+      let afkInterval = null;
+
+      let clickTimestamps = [];
+      const MAX_CPS = 9;
+      const COOLDOWN_TIME = 3000;
+      let penaltyEndTime = 0;
+
+      const rarityMultipliers = {
+        common: 1.1,
+        uncommon: 1.25,
+        rare: 1.5,
+        epic: 2.0,
+        legendary: 2.5,
+        mythic: 3.0
+      };
+
+      const crateData = {
+        common: {
+          cost: 15,
+          color: '#808080',
+          pool: [
+            { name: 'SvenFN', chance: 0.5, image: 'svenfn.jpg' },
+            { name: 'Mr_Rake', chance: 0.3, image: 'mrrake.jpg' },
+            { name: 'Hi_Acerboy', chance: 0.2, image: 'acerboy.png' }
+          ]
+        },
+        uncommon: {
+          cost: 75,
+          color: '#28a745',
+          pool: [
+            { name: 'SarynFN', chance: 0.5, image: 'SarynFN.png' },
+            { name: 'Collfillgamer', chance: 0.35, image: 'collfillgamer.jpg' },
+            { name: 'Maximo88971', chance: 0.15, image: 'maximo.jpg' }
+          ]
+        },
+        rare: {
+          cost: 225,
+          color: '#007bff',
+          pool: [
+            { name: 'itsgeorge', chance: 0.45, image: 'george.png' },
+            { name: 'urlocalchris', chance: 0.45, image: 'urlocalchris.png' },
+            { name: 'KevinFn', chance: 0.1, image: 'kevinfn.png' }
+          ]
+        },
+        epic: {
+          cost: 600,
+          color: '#8a2be2',
+          pool: [
+            { name: 'johan I lowkey forgot', chance: 0.7, image: 'johan.png' },
+            { name: 'CapybaraGamingYT', chance: 0.2, image: 'capy.jpg' },
+            { name: 'LMG2010.', chance: 0.1, image: 'LMG.png' }
+          ]
+        },
+        legendary: {
+          cost: 1500,
+          color: '#ff8c00',
+          pool: [
+            { name: 'Slimey', chance: 0.6, image: 'slimey.png' },
+            { name: 'TotalRADMANDude', chance: 0.3, image: 'radman.png' },
+            { name: 'vxrx', chance: 0.1, image: 'vxrx%20x%20corgi.jpg' }
+          ]
+        },
+        mythic: {
+          cost: 3750,
+          color: '#ffd700',
+          pool: [
+            { name: 'Mythic0Purple', chance: 0.99, image: 'mythic0purple.jpg' },
+            { name: 'Mythic vxrx', chance: 0.01, image: 'mythic%20vxrx.png' }
+          ]
+        }
+      };
+
+      // Username Save Event
+      saveUsernameBtn.addEventListener('click', () => {
+        const val = usernameInput.value.trim();
+        if (!val) {
+          alert("Please enter a valid username.");
+          return;
+        }
+        customDisplayName = val;
+        alert(`Username updated to "${customDisplayName}"!`);
+        saveGame(true);
+      });
+
+      // Tab Switchers
+      tabGame.addEventListener('click', () => {
+        tabGame.classList.add('active-tab');
+        tabLeaderboard.classList.remove('active-tab');
+        gameView.style.display = 'flex';
+        leaderboardView.style.display = 'none';
+      });
+
+      tabLeaderboard.addEventListener('click', () => {
+        tabLeaderboard.classList.add('active-tab');
+        tabGame.classList.remove('active-tab');
+        gameView.style.display = 'none';
+        leaderboardView.style.display = 'flex';
+        fetchLeaderboard();
+      });
+
+      // Leaderboard Fetching Logic
+      async function fetchLeaderboard() {
+        try {
+          const q = query(collection(db, "users"), orderBy("coins", "desc"), limit(20));
+          const querySnapshot = await getDocs(q);
+
+          leaderboardBody.innerHTML = '';
+
+          if (querySnapshot.empty) {
+            leaderboardBody.innerHTML = `<tr><td colspan="3" style="text-align:center;">No players logged on the leaderboard yet.</td></tr>`;
+            return;
+          }
+
+          let rank = 1;
+          querySnapshot.forEach((docSnap) => {
+            const data = docSnap.data();
+            const tr = document.createElement('tr');
+            
+            let rankClass = '';
+            if (rank === 1) rankClass = 'rank-top1';
+            else if (rank === 2) rankClass = 'rank-top2';
+            else if (rank === 3) rankClass = 'rank-top3';
+
+            const displayName = data.displayName || "Anonymous Player";
+            const userCoins = Math.floor(data.coins || 0);
+
+            tr.innerHTML = `
+              <td class="${rankClass}">#${rank}</td>
+              <td>${displayName}</td>
+              <td>${userCoins.toLocaleString()}</td>
+            `;
+            leaderboardBody.appendChild(tr);
+            rank++;
+          });
+        } catch (err) {
+          console.error("Error loading leaderboard:", err);
+          leaderboardBody.innerHTML = `<tr><td colspan="3" style="text-align:center; color:#ff4757;">Failed to load leaderboard data.</td></tr>`;
+        }
+      }
+
+      // Auto-refresh Leaderboard every 15 minutes
+      setInterval(() => {
+        if (leaderboardView.style.display === 'flex') {
+          fetchLeaderboard();
+        }
+      }, 15 * 60 * 1000);
+
+      function fixMissingRarities() {
+        for (let name in inventory) {
+          if (!inventory[name].rarity) {
+            for (let key in crateData) {
+              if (crateData[key].pool.some(item => item.name === name)) {
+                inventory[name].rarity = key;
+                break;
+              }
+            }
+          }
+        }
+      }
+
+      loadGameFromLocal();
+
+      onAuthStateChanged(auth, async (user) => {
+        currentUser = user;
+        if (user) {
+          authBtn.textContent = 'Sign Out';
+          if (customDisplayName === "Guest" || !customDisplayName) {
+            customDisplayName = user.displayName || user.email.split('@')[0];
+          }
+          usernameInput.value = customDisplayName;
+          userStatus.textContent = `Logged in: ${customDisplayName}`;
+          await loadGameFromCloud(user.uid);
+        } else {
+          authBtn.textContent = 'Sign in with Google';
+          userStatus.textContent = '';
+        }
+      });
+
+      authBtn.addEventListener('click', () => {
+        if (currentUser) {
+          signOut(auth);
+        } else {
+          signInWithPopup(auth, googleProvider).catch((err) => {
+            console.error("Auth error:", err);
+            alert("Could not sign in: " + err.message);
+          });
+        }
+      });
+
+      function triggerAntiCheat(reason) {
+        penaltyEndTime = Date.now() + COOLDOWN_TIME;
+        clickTimestamps = [];
+        alert(`Anti-Cheat Protection: ${reason}\nTemporary click cooldown applied.`);
+      }
+
+      function calculateTotalMultiplier() {
+        let totalMult = 1;
+        for (let name in inventory) {
+          const item = inventory[name];
+          const mult = rarityMultipliers[item.rarity] || 1;
+          totalMult += mult * item.count;
+        }
+        return totalMult;
+      }
+
+      function spawnClickPop(x, y, amount) {
+        const pop = document.createElement('div');
+        pop.className = 'click-pop';
+        pop.textContent = `+${amount % 1 === 0 ? amount : amount.toFixed(2)}`;
+        pop.style.left = `${x}px`;
+        pop.style.top = `${y}px`;
+        clicker.appendChild(pop);
+        setTimeout(() => pop.remove(), 800);
+      }
+
+      function registerClick(isAutoClick = false) {
+        const clickValue = calculateTotalMultiplier();
+        coins += clickValue;
+        coinDisplay.textContent = Math.floor(coins);
+        saveGame(false);
+
+        const rect = clicker.getBoundingClientRect();
+        const randomX = Math.random() * (rect.width - 40) + 10;
+        const randomY = Math.random() * (rect.height - 40) + 10;
+        spawnClickPop(randomX, randomY, clickValue);
+      }
+
+      clicker.addEventListener('click', (e) => {
+        const now = Date.now();
+
+        if (now < penaltyEndTime) {
+          alert("Anti-Cheat triggered! Please wait a few seconds before clicking again.");
+          return;
+        }
+
+        if (e.isTrusted === false && !isAfkActive) {
+          triggerAntiCheat("Automated event detected.");
+          return;
+        }
+
+        clickTimestamps.push(now);
+        clickTimestamps = clickTimestamps.filter(t => now - t <= 1000);
+
+        if (!isAfkActive && clickTimestamps.length > MAX_CPS) {
+          triggerAntiCheat("Click speed too high (CPS limit exceeded).");
+          return;
+        }
+
+        if (!isAfkActive && clickTimestamps.length >= 6) {
+          let intervals = [];
+          for (let i = 1; i < clickTimestamps.length; i++) {
+            intervals.push(clickTimestamps[i] - clickTimestamps[i - 1]);
+          }
+          const avg = intervals.reduce((a, b) => a + b, 0) / intervals.length;
+          const variance = intervals.reduce((a, b) => a + Math.pow(b - avg, 2), 0) / intervals.length;
+
+          if (variance < 2 && avg < 100) {
+            triggerAntiCheat("Unnatural click consistency detected.");
+            return;
+          }
+        }
+
+        registerClick();
+      });
+
+      afkBtn.addEventListener('click', () => {
+        isAfkActive = !isAfkActive;
+
+        if (isAfkActive) {
+          afkBtn.textContent = 'AFK: ON';
+          afkBtn.classList.add('active');
+          afkInterval = setInterval(() => {
+            registerClick(true);
+          }, 500);
+        } else {
+          afkBtn.textContent = 'AFK: OFF';
+          afkBtn.classList.remove('active');
+          clearInterval(afkInterval);
+        }
+      });
+
+      function saveGame(immediate = false) {
+        lastSavedTime = Date.now();
+        const gameData = { 
+          coins, 
+          inventory, 
+          lastSavedTime,
+          displayName: customDisplayName || (currentUser ? (currentUser.displayName || currentUser.email) : "Guest")
+        };
+        localStorage.setItem('vxrxClickerSave', JSON.stringify(gameData));
+
+        if (currentUser) {
+          if (immediate) {
+            clearTimeout(cloudSaveTimeout);
+            saveGameToCloud(currentUser.uid, gameData);
+          } else {
+            clearTimeout(cloudSaveTimeout);
+            cloudSaveTimeout = setTimeout(() => {
+              saveGameToCloud(currentUser.uid, gameData);
+            }, 500);
+          }
+        }
+      }
+
+      async function saveGameToCloud(uid, gameData) {
+        try {
+          await setDoc(doc(db, "users", uid), gameData);
+        } catch (err) {
+          console.error("Cloud save failed:", err.message);
+        }
+      }
+
+      async function loadGameFromCloud(uid) {
+        try {
+          const docRef = doc(db, "users", uid);
+          const docSnap = await getDoc(docRef);
+
+          if (docSnap.exists()) {
+            const cloudData = docSnap.data();
+            const cloudTime = cloudData.lastSavedTime || 0;
+
+            if (cloudTime > lastSavedTime) {
+              coins = cloudData.coins ?? 0;
+              inventory = cloudData.inventory || {};
+              lastSavedTime = cloudTime;
+              if (cloudData.displayName) {
+                customDisplayName = cloudData.displayName;
+                usernameInput.value = customDisplayName;
+              }
+              fixMissingRarities();
+              localStorage.setItem('vxrxClickerSave', JSON.stringify({ coins, inventory, lastSavedTime, displayName: customDisplayName }));
+            } else {
+              saveGame(true);
+            }
+          } else {
+            saveGame(true);
+          }
+          coinDisplay.textContent = Math.floor(coins);
+          renderInventory();
+        } catch (err) {
+          console.warn("Could not fetch cloud save, using local save:", err.message);
+        }
+      }
+
+      function loadGameFromLocal() {
+        const savedData = localStorage.getItem('vxrxClickerSave');
+        if (savedData) {
+          const parsedData = JSON.parse(savedData);
+          coins = parsedData.coins || 0;
+          inventory = parsedData.inventory || {};
+          lastSavedTime = parsedData.lastSavedTime || 0;
+          customDisplayName = parsedData.displayName || "Guest";
+          usernameInput.value = customDisplayName !== "Guest" ? customDisplayName : "";
+        } else {
+          coins = 0;
+          inventory = {};
+          lastSavedTime = 0;
+          customDisplayName = "Guest";
+        }
+        fixMissingRarities();
+        coinDisplay.textContent = Math.floor(coins);
+        renderInventory();
+      }
+
+      resetBtn.addEventListener('click', () => {
+        if (confirm("Are you sure you want to reset all coins and unlocked characters?")) {
+          localStorage.removeItem('vxrxClickerSave');
+          if (currentUser) {
+            setDoc(doc(db, "users", currentUser.uid), { coins: 0, inventory: {}, lastSavedTime: Date.now(), displayName: "Guest" }).catch(() => {});
+          }
+          location.reload();
+        }
+      });
+
+      document.querySelectorAll('.buy-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const type = btn.getAttribute('data-type');
+          const cost = parseInt(btn.getAttribute('data-cost'), 10);
+
+          if (coins < cost) {
+            alert("Not enough coins!");
+            return;
+          }
+
+          coins -= cost;
+          coinDisplay.textContent = Math.floor(coins);
+
+          const crate = crateData[type];
+          const resultCharacter = rollCharacter(crate.pool);
+
+          addToInventory(resultCharacter, crate.color, crate.cost, type);
+          saveGame(true);
+
+          startCrateAnimation(type, crate.color, resultCharacter);
+        });
+      });
+
+      function rollCharacter(pool) {
+        const rand = Math.random();
+        let cumulative = 0;
+        for (let item of pool) {
+          cumulative += item.chance;
+          if (rand <= cumulative) {
+            return item.name;
+          }
+        }
+        return pool[0].name;
+      }
+
+      function getItemCost(name) {
+        for (let key in crateData) {
+          const found = crateData[key].pool.find(item => item.name === name);
+          if (found) return crateData[key].cost;
+        }
+        return 10;
+      }
+
+      function addToInventory(name, color, cost, rarity) {
+        let charImage = '';
+        let foundRarity = rarity;
+
+        for (let key in crateData) {
+          const found = crateData[key].pool.find(item => item.name === name);
+          if (found) {
+            charImage = found.image;
+            foundRarity = key;
+            break;
+          }
+        }
+
+        if (inventory[name]) {
+          inventory[name].count++;
+          inventory[name].rarity = foundRarity;
+        } else {
+          inventory[name] = { 
+            count: 1, 
+            color: color, 
+            image: charImage, 
+            cost: cost, 
+            rarity: foundRarity 
+          };
+        }
+        renderInventory();
+      }
+
+      function sellDuplicate(name) {
+        if (inventory[name] && inventory[name].count > 1) {
+          const itemCost = inventory[name].cost || getItemCost(name);
+          const sellPrice = Math.floor(itemCost * 0.5);
+
+          inventory[name].count--;
+          coins += sellPrice;
+          coinDisplay.textContent = Math.floor(coins);
+
+          renderInventory();
+          saveGame(true);
+        }
+      }
+
+      function renderInventory() {
+        inventoryList.innerHTML = '';
+        const keys = Object.keys(inventory);
+
+        if (keys.length === 0) {
+          inventoryList.innerHTML = '<div class="empty-msg">No characters unlocked yet!</div>';
+          return;
+        }
+
+        keys.forEach((name) => {
+          const item = inventory[name];
+          const itemCost = item.cost || getItemCost(name);
+          const sellPrice = Math.floor(itemCost * 0.5);
+          const mult = rarityMultipliers[item.rarity] || 1;
+
+          const card = document.createElement('div');
+          card.className = 'inventory-card';
+          card.style.borderColor = item.color;
+
+          card.innerHTML = `
+            <div style="display: flex; align-items: center; gap: 10px;">
+              <img src="${item.image}" alt="${name}" style="width: 40px; height: 40px; border-radius: 6px; object-fit: cover;">
+              <div class="item-info">
+                <span class="item-name" style="color: ${item.color}">${name}</span>
+                <span class="item-count">x${item.count}</span>
+                <span class="item-mult">+${mult}x per click</span>
+              </div>
+            </div>
+            ${item.count > 1 ? `<button class="sell-btn" data-name="${name}">Sell (+${sellPrice})</button>` : ''}
+          `;
+
+          inventoryList.appendChild(card);
+        });
+
+        document.querySelectorAll('.sell-btn').forEach(btn => {
+          btn.addEventListener('click', (e) => {
+            const name = e.target.getAttribute('data-name');
+            sellDuplicate(name);
+          });
+        });
+      }
+
+      // Crate Animation Modal
+      const modal = document.getElementById('crate-modal');
+      const modalBox = document.getElementById('modal-box');
+      const rewardText = document.getElementById('reward-text');
+
+      function startCrateAnimation(type, color, resultName) {
+        modal.classList.add('active');
+        modalBox.className = 'opening-box shake-animation';
+        modalBox.style.borderColor = color;
+        modalBox.style.boxShadow = `0 0 30px ${color}`;
+        modalBox.textContent = '???';
+        rewardText.textContent = 'Opening...';
+        closeModalBtn.style.display = 'none';
+
+        setTimeout(() => {
+          modalBox.className = 'opening-box pop-animation';
+          modalBox.textContent = resultName;
+          rewardText.textContent = `Unlocked ${resultName}!`;
+          closeModalBtn.style.display = 'block';
+        }, 1500);
+      }
+
+      closeModalBtn.addEventListener('click', () => {
+        modal.classList.remove('active');
+      });
+    });
+  </script>
+</body>
+</html>
