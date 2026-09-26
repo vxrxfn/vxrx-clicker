@@ -622,7 +622,7 @@
         projectId: "vxrxclicker-2baf2",
         storageBucket: "vxrxclicker-2baf2.firebasestorage.app",
         messagingSenderId: "118689735322",
-        appId: "1:118689735322:web:3660b37c0dfd87d575f523"
+        appId: "1:118689735322:web:466d52ba0d72e66d75f523"
       };
 
       const app = initializeApp(firebaseConfig);
@@ -634,8 +634,8 @@
       let inventory = {};
       let lastSavedTime = 0;
       let currentUser = null;
-      let cloudSaveTimeout = null;
       let customDisplayName = "Guest";
+      let isSavePending = false;
 
       const coinDisplay = document.getElementById('coin-count');
       const clicker = document.getElementById('clicker');
@@ -937,28 +937,46 @@
         }
       });
 
-      function saveGame(immediate = false) {
+      function getSavePayload() {
         lastSavedTime = Date.now();
-        const gameData = { 
+        return { 
           coins, 
           inventory, 
           lastSavedTime,
           displayName: customDisplayName || (currentUser ? (currentUser.displayName || currentUser.email) : "Guest")
         };
+      }
+
+      function saveGame(immediate = false) {
+        const gameData = getSavePayload();
         localStorage.setItem('vxrxClickerSave', JSON.stringify(gameData));
 
         if (currentUser) {
           if (immediate) {
-            clearTimeout(cloudSaveTimeout);
             saveGameToCloud(currentUser.uid, gameData);
+            isSavePending = false;
           } else {
-            clearTimeout(cloudSaveTimeout);
-            cloudSaveTimeout = setTimeout(() => {
-              saveGameToCloud(currentUser.uid, gameData);
-            }, 500);
+            isSavePending = true;
           }
         }
       }
+
+      // Throttled Cloud Save Interval (Runs every 30 seconds to stay within free quota)
+      setInterval(() => {
+        if (currentUser && isSavePending) {
+          const gameData = getSavePayload();
+          saveGameToCloud(currentUser.uid, gameData);
+          isSavePending = false;
+        }
+      }, 30000);
+
+      // Final save when closing or navigating away
+      window.addEventListener('beforeunload', () => {
+        if (currentUser && isSavePending) {
+          const gameData = getSavePayload();
+          saveGameToCloud(currentUser.uid, gameData);
+        }
+      });
 
       async function saveGameToCloud(uid, gameData) {
         try {
